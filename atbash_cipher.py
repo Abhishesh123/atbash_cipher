@@ -1,5 +1,7 @@
 import string
 import sys
+from queue import Queue
+import threading
 
 lookup_table = {
 
@@ -16,9 +18,10 @@ lookup_table = {
 
 punctuations = string.punctuation
 numbers = string.digits
-
+que = Queue()
 
 def atbash(message):
+	print(lookup_table)
 	result = ''
 	for i in message:
 		if (i != ' ' and i not in punctuations and i not in numbers):
@@ -31,14 +34,32 @@ def atbash(message):
 			result += ' '
 	return result
 
+data = ''
+
+def openFile():
+	global data
+	with open("original_data.txt", "r") as f:
+		data = atbash(f.read().rstrip("\n"))
+		print(data)
+	
+
+
+print("Vishvajit:- ", data)
 #read text from original_data.txt file
-with open(f"original_data.txt", "r") as f:
-	data = atbash(f.read()).lower()
+# with open("original_data.txt", "r") as f:
+# value = f.read().rstrip("\n")
+# print(value)
+t = threading.Thread(target = openFile())
+t.start()
+t.join()
+
+
 
 
 
 #convert first character in upper case
 result = data[0].upper() + data[1:]
+print("Result:- ", result)
 
 #empty list to store encrypted data
 encrypt_data = []
@@ -55,4 +76,5 @@ for i in result.split(' '):
 #write the output in encrypt_data.txt after encryption
 with open("encrypt_data.txt", "w") as f:
 	f.write(' '.join(encrypt_data))
+
 
